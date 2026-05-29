@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hamasa حمَّاصة — Content Calendar</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #1a1012;
+  --bg2: #120b0d;
+  --bg3: #241619;
+  --border: rgba(122,30,38,0.22);
+  --border-hover: rgba(200,140,90,0.45);
+  --text: #fbf3ee;
+  --text2: #d6b8aa;
+  --text3: #94706a;
+  --maroon: #7a1e26;
+  --maroon-deep: #4a1118;
+  --caramel: #c8965a;
+  --menu: #7a1e26;
+  --vibe: #9a6b4a;
+  --engage: #b5485e;
+  --bts: #c8965a;
+  --offer: #d4a017;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'Tajawal',sans-serif;
+  background:var(--bg);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(122,30,38,0.18), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 10%, rgba(200,150,90,0.08), transparent 55%);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::before {
+  content:''; position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(122,30,38,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(122,30,38,0.04) 1px, transparent 1px);
+  background-size:40px 40px; pointer-events:none; z-index:0;
+}
+
+/* NAV */
+.topnav {
+  position:sticky; top:0; z-index:100;
+  background:var(--maroon-deep);
+  border-bottom:3px solid var(--caramel);
+  padding:0 2rem; display:flex; align-items:center; gap:1rem; height:64px;
+}
+.nav-logo { display:flex; align-items:center; gap:12px; }
+.nav-logo-badge {
+  font-size:16px; font-weight:900; background:var(--maroon); color:#fff;
+  padding:4px 14px; border-radius:4px; letter-spacing:1px;
+}
+.nav-title { font-size:14px; color:var(--text2); font-weight:500; }
+.nav-spacer { flex:1; }
+.btn {
+  background:rgba(255,255,255,0.06); color:var(--text); border:1px solid var(--border);
+  padding:8px 16px; border-radius:6px; font-family:inherit; font-size:13px; font-weight:700;
+  cursor:pointer; transition:.2s;
+}
+.btn:hover { border-color:var(--border-hover); background:rgba(255,255,255,0.1); }
+.btn-primary { background:var(--maroon); border-color:var(--maroon); color:#fff; }
+.btn-primary:hover { background:#92242e; }
+
+.wrap { position:relative; z-index:1; max-width:1400px; margin:0 auto; padding:2rem; }
+
+/* HEADER */
+.cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem; }
+.cal-title-block h1 { font-size:28px; font-weight:900; letter-spacing:-0.5px; }
+.cal-title-block h1 .accent { color:var(--caramel); }
+.cal-title-block p { font-size:13px; color:var(--text3); margin-top:4px; }
+.month-nav { display:flex; align-items:center; gap:8px; }
+.month-nav .month-label { font-size:18px; font-weight:800; min-width:160px; text-align:center; }
+.icon-btn {
+  width:38px; height:38px; border-radius:8px; background:rgba(255,255,255,0.05);
+  border:1px solid var(--border); color:var(--text); cursor:pointer; font-size:18px;
+  display:flex; align-items:center; justify-content:center; transition:.2s;
+}
+.icon-btn:hover { border-color:var(--border-hover); background:rgba(255,255,255,0.1); }
+
+/* LEGEND */
+.legend { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:1.25rem; padding:12px 16px; background:rgba(255,255,255,0.02); border:1px solid var(--border); border-radius:10px; }
+.legend-item { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text2); font-weight:600; }
+.legend-dot { width:11px; height:11px; border-radius:3px; }
+
+/* CALENDAR GRID */
+.weekdays { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-bottom:8px; }
+.weekday { text-align:center; font-size:12px; font-weight:800; color:var(--text3); padding:6px; letter-spacing:1px; }
+.cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; }
+.day-cell {
+  min-height:120px; background:rgba(255,255,255,0.025); border:1px solid var(--border);
+  border-radius:10px; padding:8px; position:relative; transition:.2s; cursor:pointer;
+  display:flex; flex-direction:column; gap:5px;
+}
+.day-cell:hover { border-color:var(--border-hover); background:rgba(255,255,255,0.045); transform:translateY(-2px); }
+.day-cell.empty { background:transparent; border:1px dashed rgba(122,30,38,0.12); cursor:default; }
+.day-cell.empty:hover { transform:none; }
+.day-cell.today { border-color:var(--caramel); box-shadow:0 0 0 1px var(--caramel) inset; }
+.day-num { font-size:13px; font-weight:800; color:var(--text2); display:flex; justify-content:space-between; align-items:center; }
+.day-num .today-tag { font-size:9px; background:var(--caramel); color:#3a1010; padding:1px 6px; border-radius:10px; font-weight:800; }
+.day-weekday-lbl { font-size:9px; color:var(--text3); font-weight:600; }
+
+.post-chip {
+  font-size:10.5px; padding:4px 7px; border-radius:6px; font-weight:700; line-height:1.35;
+  border-right:3px solid; background:rgba(255,255,255,0.04); color:var(--text);
+  display:flex; flex-direction:column; gap:2px;
+}
+.post-chip .chip-plat { font-size:8.5px; opacity:.75; font-weight:600; letter-spacing:.3px; }
+.add-mini { font-size:10px; color:var(--text3); border:1px dashed var(--border); border-radius:6px; padding:3px; text-align:center; opacity:0; transition:.2s; margin-top:auto; }
+.day-cell:hover .add-mini { opacity:1; }
+
+/* category border colors */
+.cat-menu { border-color:var(--menu); }
+.cat-vibe { border-color:var(--vibe); }
+.cat-engage { border-color:var(--engage); }
+.cat-bts { border-color:var(--bts); }
+.cat-offer { border-color:var(--offer); }
+
+/* STATS BAR */
+.stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-bottom:1.5rem; }
+.stat-card { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:10px; padding:14px 16px; }
+.stat-card .num { font-size:26px; font-weight:900; color:var(--caramel); font-family:'Space Mono',monospace; }
+.stat-card .lbl { font-size:11px; color:var(--text3); font-weight:600; margin-top:2px; }
+
+/* MODAL */
+.modal-overlay { position:fixed; inset:0; background:rgba(10,6,7,0.8); backdrop-filter:blur(4px); z-index:200; display:none; align-items:center; justify-content:center; padding:1rem; }
+.modal-overlay.open { display:flex; }
+.modal {
+  background:var(--bg3); border:1px solid var(--border); border-radius:16px;
+  width:100%; max-width:480px; max-height:90vh; overflow-y:auto; padding:1.5rem;
+  box-shadow:0 24px 60px rgba(0,0,0,.5);
+}
+.modal h3 { font-size:18px; font-weight:900; margin-bottom:4px; }
+.modal .modal-sub { font-size:12px; color:var(--text3); margin-bottom:1.25rem; }
+.form-group { margin-bottom:1rem; }
+.form-label { display:block; font-size:12px; font-weight:700; color:var(--text2); margin-bottom:6px; }
+.form-input, .form-select, .form-textarea {
+  width:100%; background:rgba(0,0,0,0.25); border:1px solid var(--border); border-radius:8px;
+  padding:10px 12px; color:var(--text); font-family:inherit; font-size:13px;
+}
+.form-textarea { resize:vertical; min-height:70px; }
+.form-input:focus, .form-select:focus, .form-textarea:focus { outline:none; border-color:var(--caramel); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.modal-actions { display:flex; gap:10px; margin-top:1.25rem; }
+.modal-actions .btn { flex:1; justify-content:center; }
+.btn-danger { background:rgba(224,82,106,0.12); border-color:rgba(224,82,106,0.4); color:#e0526a; }
+.btn-danger:hover { background:rgba(224,82,106,0.2); }
+.existing-posts { margin-bottom:1rem; display:flex; flex-direction:column; gap:8px; }
+.existing-post {
+  display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:8px;
+  background:rgba(255,255,255,0.03); border:1px solid var(--border); border-right-width:3px;
+}
+.existing-post .ep-text { flex:1; font-size:12px; }
+.existing-post .ep-text .ep-plat { font-size:10px; color:var(--text3); }
+.ep-del { background:none; border:none; color:#e0526a; cursor:pointer; font-size:16px; padding:2px 6px; }
+
+/* IDEAS PANEL */
+.ideas-section { margin-top:2.5rem; }
+.ideas-section h2 { font-size:20px; font-weight:900; margin-bottom:6px; }
+.ideas-section h2 .accent { color:var(--caramel); }
+.ideas-section > p { font-size:13px; color:var(--text3); margin-bottom:1.25rem; }
+.ideas-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; }
+.idea-card { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-right-width:3px; border-radius:12px; padding:14px 16px; transition:.2s; }
+.idea-card:hover { border-color:var(--border-hover); background:rgba(255,255,255,0.05); transform:translateY(-2px); }
+.idea-card .ic-cat { font-size:10px; font-weight:800; letter-spacing:.5px; margin-bottom:6px; display:inline-block; padding:2px 8px; border-radius:10px; }
+.idea-card h4 { font-size:14px; font-weight:800; margin-bottom:5px; }
+.idea-card p { font-size:12px; color:var(--text2); line-height:1.5; }
+.idea-card .ic-meta { font-size:10.5px; color:var(--text3); margin-top:8px; font-family:'Space Mono',monospace; }
+.idea-card .ic-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+.idea-card .ic-tools { display:flex; gap:2px; opacity:0; transition:.2s; }
+.idea-card:hover .ic-tools { opacity:1; }
+.ic-tool { background:none; border:none; cursor:pointer; font-size:13px; padding:3px 5px; border-radius:5px; transition:.15s; }
+.ic-tool:hover { background:rgba(255,255,255,0.08); }
+.ic-linkrow { margin-top:8px; }
+.idea-link {
+  display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700;
+  color:var(--caramel); text-decoration:none; background:rgba(200,150,90,0.12);
+  padding:5px 10px; border-radius:7px; border:1px solid rgba(200,150,90,0.3); transition:.15s;
+}
+.idea-link:hover { background:rgba(200,150,90,0.22); border-color:var(--caramel); }
+.ic-actions { display:flex; gap:6px; margin-top:10px; padding-top:10px; border-top:1px solid var(--border); }
+.ic-add, .ic-linkbtn {
+  flex:1; font-family:inherit; font-size:11px; font-weight:700; cursor:pointer;
+  padding:7px 6px; border-radius:7px; transition:.15s; border:1px solid var(--border); background:rgba(255,255,255,0.04); color:var(--text);
+}
+.ic-add { background:var(--maroon); border-color:var(--maroon); color:#fff; }
+.ic-add:hover { background:#92242e; }
+.ic-linkbtn:hover { border-color:var(--border-hover); background:rgba(255,255,255,0.08); }
+
+.footer { margin-top:3rem; padding:1rem 0; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+.footer .f-left { font-size:11px; color:var(--text3); }
+.footer .f-right { font-size:14px; font-weight:900; color:var(--caramel); }
+
+@media (max-width:760px) {
+  .wrap { padding:1rem; }
+  .day-cell { min-height:90px; }
+  .post-chip { font-size:9.5px; }
+  .nav-title { display:none; }
+  .day-weekday-lbl { display:none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-logo">
+    <span class="nav-logo-badge">حمَّاصة</span>
+    <span class="nav-title">Content Calendar — كاليندر المحتوى</span>
+  </div>
+  <div class="nav-spacer"></div>
+  <button class="btn" onclick="applyTemplate()">✨ تعبئة بالإيقاع الأسبوعي</button>
+  <button class="btn" onclick="exportData()" title="تصدير نسخة احتياطية">📤 تصدير</button>
+  <label class="btn" style="cursor:pointer" title="استيراد نسخة احتياطية">📥 استيراد<input type="file" accept=".json" onchange="importData(event)" style="display:none"></label>
+  <button class="btn btn-primary" onclick="saveLocal()">💾 حفظ</button>
+</nav>
+
+<div class="wrap">
+
+  <div class="cal-header">
+    <div class="cal-title-block">
+      <h1>كاليندر محتوى <span class="accent">حمَّاصة</span></h1>
+      <p>خطّط، نظّم، وتابع محتوى الكوفي شهرياً — اضغط أي يوم لإضافة أو تعديل بوست</p>
+    </div>
+    <div class="month-nav">
+      <button class="icon-btn" onclick="changeMonth(-1)">‹</button>
+      <div class="month-label" id="monthLabel"></div>
+      <button class="icon-btn" onclick="changeMonth(1)">›</button>
+    </div>
+  </div>
+
+  <div class="stats-row" id="statsRow"></div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot" style="background:var(--menu)"></span> ☕ المنيو والمشروبات</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--vibe)"></span> 🏠 الأجواء والمكان</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--engage)"></span> 💬 التفاعل والترندات</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--bts)"></span> 🎬 خلف الكواليس</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--offer)"></span> 🎁 العروض والإعلانات</div>
+  </div>
+
+  <div class="weekdays" id="weekdays"></div>
+  <div class="cal-grid" id="calGrid"></div>
+
+  <!-- IDEAS -->
+  <div class="ideas-section">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+      <h2 style="margin:0">بنك الأفكار <span class="accent" id="ideaCount">— 30 فكرة جاهزة</span></h2>
+      <button class="btn btn-primary" onclick="openIdeaEditor(null)">+ فكرة جديدة</button>
+    </div>
+    <p>أفكار محتوى مفصّلة على حماصة. اضغط <b>↗ إضافة لليوم</b> لوضعها بالكاليندر، أو <b>✏️</b> للتعديل، أو 🔗 لربط فيديو/بوست</p>
+    <div class="ideas-grid" id="ideasGrid"></div>
+  </div>
+
+  <div class="footer">
+    <span class="f-left">Content Calendar · حمَّاصة × Watad · إعداد صالح</span>
+    <span class="f-right">حمَّاصة</span>
+  </div>
+</div>
+
+<!-- DAY MODAL -->
+<div class="modal-overlay" id="dayModal">
+  <div class="modal">
+    <h3 id="modalDate">إضافة محتوى</h3>
+    <p class="modal-sub" id="modalSub"></p>
+    <div class="existing-posts" id="existingPosts"></div>
+    <div class="form-group">
+      <label class="form-label">نوع المحتوى / العنوان</label>
+      <input class="form-input" id="f-title" placeholder="مثال: ريل تحضير الكافيه لاتيه">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">القسم</label>
+        <select class="form-select" id="f-cat">
+          <option value="menu">☕ المنيو والمشروبات</option>
+          <option value="vibe">🏠 الأجواء والمكان</option>
+          <option value="engage">💬 التفاعل والترندات</option>
+          <option value="bts">🎬 خلف الكواليس</option>
+          <option value="offer">🎁 العروض والإعلانات</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">المنصة</label>
+        <select class="form-select" id="f-plat">
+          <option>Instagram</option>
+          <option>TikTok</option>
+          <option>Snapchat</option>
+          <option>Facebook</option>
+          <option>All Platforms</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">ملاحظة (اختياري)</label>
+      <textarea class="form-textarea" id="f-note" placeholder="تفاصيل التنفيذ، الكابشن، الهاشتاقات..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">🔗 رابط الفيديو / البوست (اختياري)</label>
+      <input class="form-input" id="f-link" placeholder="الصق لينك Instagram / TikTok / YouTube / Drive">
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="addPost()">+ إضافة لليوم</button>
+    </div>
+  </div>
+</div>
+
+<!-- IDEA EDITOR MODAL -->
+<div class="modal-overlay" id="ideaEditor">
+  <div class="modal">
+    <h3 id="ideaEditorTitle">فكرة جديدة</h3>
+    <p class="modal-sub">أضف أو عدّل فكرة محتوى — تقدر تربط فيديو أو بوست بالرابط</p>
+    <div class="form-group">
+      <label class="form-label">عنوان الفكرة</label>
+      <input class="form-input" id="ie-title" placeholder="مثال: ريل تحضير الكافيه لاتيه">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">القسم</label>
+        <select class="form-select" id="ie-cat">
+          <option value="menu">☕ المنيو والمشروبات</option>
+          <option value="vibe">🏠 الأجواء والمكان</option>
+          <option value="engage">💬 التفاعل والترندات</option>
+          <option value="bts">🎬 خلف الكواليس</option>
+          <option value="offer">🎁 العروض والإعلانات</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">النوع / المنصة</label>
+        <input class="form-input" id="ie-meta" placeholder="Instagram Reel · 15s">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">الوصف</label>
+      <textarea class="form-textarea" id="ie-desc" placeholder="تفاصيل الفكرة والهدف منها..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">🔗 رابط الفيديو / البوست (اختياري)</label>
+      <input class="form-input" id="ie-link" placeholder="الصق لينك Instagram / TikTok / YouTube / Drive">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-danger" id="ie-delete" onclick="deleteIdeaFromEditor()">🗑️ حذف</button>
+      <button class="btn" onclick="closeIdeaEditor()">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveIdea()">💾 حفظ</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── STATE ──────────────────────────────────────────────
+const catNames = { menu:'☕ المنيو', vibe:'🏠 الأجواء', engage:'💬 التفاعل', bts:'🎬 خلف الكواليس', offer:'🎁 العروض' };
+const catClass = { menu:'cat-menu', vibe:'cat-vibe', engage:'cat-engage', bts:'cat-bts', offer:'cat-offer' };
+const catColor = { menu:'var(--menu)', vibe:'var(--vibe)', engage:'var(--engage)', bts:'var(--bts)', offer:'var(--offer)' };
+const weekdaysAr = ['السبت','الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'];
+const monthsAr = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+
+// الإيقاع الأسبوعي الثابت (index 0=السبت ... 6=الجمعة)
+const weeklyTemplate = {
+  0: { title:'مشروب الأسبوع — Hero Shot أو ريل تحضير', cat:'menu', plat:'Instagram' },
+  1: { title:'أجواء المكان — Morning / Cozy Vibes', cat:'vibe', plat:'Instagram' },
+  2: { title:'ترند أو سؤال تفاعلي (Poll/Trend)', cat:'engage', plat:'TikTok' },
+  3: { title:'خلف الكواليس — الباريستا / التحضير', cat:'bts', plat:'Instagram' },
+  4: { title:'عرض أو صنف اليوم — تذكير', cat:'offer', plat:'All Platforms' },
+  5: { title:'مشروب + Weekend Mood', cat:'menu', plat:'TikTok' },
+  6: { title:'ستوري خفيف — لقطة اليوم', cat:'vibe', plat:'Snapchat' },
+};
+
+// بنك الأفكار — 30 فكرة (قابلة للتعديل والإضافة)
+let ideaBank = [
+  { cat:'menu', title:'ريل تحضير Signature Drink', desc:'لقطة قريبة لتحضير مشروب حماصة المميز — صب، لاتيه آرت، بخار. صوت ASMR.', meta:'Instagram Reel · 15-20s' },
+  { cat:'menu', title:'Hero Shot للمشروب', desc:'صورة احترافية على خلفية خشبية دافئة، إضاءة طبيعية تبرز البخار.', meta:'Instagram Post' },
+  { cat:'menu', title:'Carousel أنواع القهوة', desc:'كاروسيل يعرض أنواع القهوة (حار/بارد/مختص) كل صورة صنف بوصفه.', meta:'Instagram Carousel' },
+  { cat:'menu', title:'صنف اليوم — Special', desc:'ستوري يومي يعرض مشروب أو حلى مميز اليوم مع السعر.', meta:'Snapchat Story' },
+  { cat:'menu', title:'New Item Drop', desc:'ريل تشويقي لإطلاق صنف جديد — كشف تدريجي للمشروب.', meta:'Instagram Reel' },
+  { cat:'menu', title:'Iced vs Hot', desc:'مقارنة بصرية بين النسخة الحارة والباردة من نفس المشروب.', meta:'TikTok · 15s' },
+  { cat:'vibe', title:'Cozy Corner', desc:'صورة لزاوية جميلة بالكوفي — إضاءة دافئة، جلسة مريحة، تفاصيل ديكور.', meta:'Instagram Post' },
+  { cat:'vibe', title:'Morning Vibes — صباح حماصة', desc:'ريل هادئ يصور أجواء الصباح — ضوء الشمس، بخار القهوة، موسيقى هادئة.', meta:'Instagram Reel' },
+  { cat:'vibe', title:'POV — تجربة الزيارة', desc:'فيديو POV "تخيل تدخل حماصة" من الباب للجلسة للمشروب.', meta:'TikTok · POV' },
+  { cat:'vibe', title:'تفاصيل الديكور', desc:'لقطات قريبة (نباتات، إضاءة، الكوب، اللوغو) بأسلوب أنيق.', meta:'Instagram Carousel' },
+  { cat:'vibe', title:'Rainy Day Mood', desc:'محتوى يربط جو الطقس بالقهوة — "يوم مطر + كوب دافئ بحماصة".', meta:'Instagram Story' },
+  { cat:'vibe', title:'Night Vibe', desc:'أجواء حماصة بالمساء — إضاءة دافئة، جلسة هادئة بعد العمل.', meta:'Instagram Reel' },
+  { cat:'engage', title:'ترند صوتي رائج', desc:'ريل على ترند صوتي/فكرة رائجة مطبّق على جو الكوفي.', meta:'TikTok · Trend' },
+  { cat:'engage', title:'UGC — محتوى الزبائن', desc:'إعادة نشر محتوى زبون صوّر تجربته بحماصة مع شكر.', meta:'Instagram Repost' },
+  { cat:'engage', title:'سؤال تفاعلي — Poll', desc:'ستوري: "وش مزاجك اليوم؟ حار ولا بارد؟" يرفع التفاعل.', meta:'Instagram Story' },
+  { cat:'engage', title:'تحدي / Challenge', desc:'تحدي ممتع مرتبط بالقهوة يشجع المتابعين للمشاركة.', meta:'TikTok · Challenge' },
+  { cat:'engage', title:'Giveaway — مسابقة', desc:'تابع + تاق صديق = كوب مجاني. يرفع الوصول بسرعة.', meta:'Instagram Giveaway' },
+  { cat:'engage', title:'This or That', desc:'ستوري تصويت بين خيارين (كابتشينو ولا لاتيه؟) سريع وممتع.', meta:'Instagram Story' },
+  { cat:'bts', title:'يوم مع الباريستا', desc:'فيديو يتابع الباريستا بيومه — تحضير، تركيز، شغف. لمسة إنسانية.', meta:'Instagram Reel · BTS' },
+  { cat:'bts', title:'How It\u2019s Made', desc:'فيديو يكشف تحضير صنف مميز خطوة بخطوة — يبني ثقة بالجودة.', meta:'TikTok · Process' },
+  { cat:'bts', title:'Meet the Team', desc:'تعريف بأعضاء فريق حماصة — يخلق ألفة وقرب مع الجمهور.', meta:'Instagram Post' },
+  { cat:'bts', title:'قصة حماصة — Our Story', desc:'فيديو يحكي قصة الكوفي، الفكرة، ليش "حماصة". يبني ولاء.', meta:'Instagram Reel' },
+  { cat:'bts', title:'لقطات يومية', desc:'ستوريات عفوية من داخل الكوفي خلال اليوم — إحساس "حي".', meta:'Snapchat Daily' },
+  { cat:'bts', title:'تحميص القهوة', desc:'محتوى عن مصدر/تحميص البن — يربط الاسم "حماصة" بالحرفة.', meta:'Instagram Reel' },
+  { cat:'offer', title:'بوست العرض', desc:'تصميم واضح للعرض (خصم/كومبو) بهوية حماصة — عنوان كبير.', meta:'Instagram Post + Story' },
+  { cat:'offer', title:'Countdown العرض', desc:'ستوري عدّاد "آخر يومين" يخلق urgency — يُحدّث يومياً.', meta:'Snapchat Daily' },
+  { cat:'offer', title:'Combo Deal', desc:'فيديو يعرض كومبو (قهوة + حلى) بسعر مميز مع CTA "تعال جرب".', meta:'TikTok · 15s' },
+  { cat:'offer', title:'مناسبة موسمية', desc:'محتوى مرتبط بمناسبة (رمضان/عيد/شتاء) — مشروب خاص بالموسم.', meta:'Instagram · Seasonal' },
+  { cat:'offer', title:'Happy Hour', desc:'عرض ساعة محددة (مثلاً 4-6 العصر خصم) — يحرّك الأوقات الهادئة.', meta:'All Platforms' },
+  { cat:'offer', title:'Loyalty / بطاقة الولاء', desc:'ترويج لبرنامج الولاء — "كل 5 أكواب، السادس هدية".', meta:'Instagram Post' },
+];
+
+let current = new Date(2026, 5, 1); // يونيو 2026
+let posts = {}; // { 'YYYY-M-D': [ {title,cat,plat,note} ] }
+let selectedKey = null;
+
+// ─── STORAGE KEY ──────────────────────────────────────────
+const LS_POSTS = 'hamasa_posts_v1';
+const LS_IDEAS = 'hamasa_ideas_v1';
+
+// ─── LOAD FROM localStorage ON STARTUP ───────────────────
+(function loadSaved() {
+  try {
+    const savedPosts = localStorage.getItem(LS_POSTS);
+    const savedIdeas = localStorage.getItem(LS_IDEAS);
+    if (savedPosts) Object.assign(posts, JSON.parse(savedPosts));
+    if (savedIdeas) { ideaBank.length = 0; ideaBank.push(...JSON.parse(savedIdeas)); }
+  } catch(e) { console.warn('تعذّر تحميل البيانات المحفوظة', e); }
+})();
+
+// ─── SAVE TO localStorage ─────────────────────────────────
+function saveLocal() {
+  try {
+    localStorage.setItem(LS_POSTS, JSON.stringify(posts));
+    localStorage.setItem(LS_IDEAS, JSON.stringify(ideaBank));
+    const s = document.querySelector('.btn-primary');
+    const orig = s.textContent;
+    s.textContent = '✅ تم الحفظ!';
+    s.style.background = '#2d7a4a';
+    setTimeout(()=>{ s.textContent = orig; s.style.background = ''; }, 1800);
+  } catch(e) {
+    alert('⚠️ تعذّر الحفظ: ' + e.message);
+  }
+}
+
+// ─── AUTO-SAVE (كل تغيير) ─────────────────────────────────
+function autoSave() {
+  try {
+    localStorage.setItem(LS_POSTS, JSON.stringify(posts));
+    localStorage.setItem(LS_IDEAS, JSON.stringify(ideaBank));
+  } catch(e) {}
+}
+
+// ─── EXPORT JSON BACKUP ───────────────────────────────────
+function exportData() {
+  const data = { posts, ideaBank, exportedAt: new Date().toISOString(), version: 1 };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'hamasa-calendar-backup-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ─── IMPORT JSON BACKUP ───────────────────────────────────
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.posts) throw new Error('ملف غير صالح');
+      if (!confirm('راح يُستبدل المحتوى الحالي بالنسخة المستوردة. متأكد؟')) return;
+      Object.keys(posts).forEach(k => delete posts[k]);
+      Object.assign(posts, data.posts);
+      if (data.ideaBank) { ideaBank.length = 0; ideaBank.push(...data.ideaBank); }
+      autoSave();
+      renderCalendar();
+      renderIdeas();
+      alert('✅ تم الاستيراد بنجاح!');
+    } catch(err) { alert('⚠️ خطأ في الاستيراد: ' + err.message); }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ─── RENDER CALENDAR ─────────────────────────────────────
+function keyOf(y,m,d){ return y+'-'+m+'-'+d; }
+
+function renderCalendar() {
+  const y = current.getFullYear();
+  const m = current.getMonth();
+  document.getElementById('monthLabel').textContent = monthsAr[m] + ' ' + y;
+
+  // weekday headers (السبت first)
+  const wd = document.getElementById('weekdays');
+  wd.innerHTML = weekdaysAr.map(d=>`<div class="weekday">${d}</div>`).join('');
+
+  // أول يوم بالشهر — نحسب موقعه (السبت=0)
+  const firstDay = new Date(y, m, 1).getDay(); // 0=Sunday..6=Saturday
+  const offset = (firstDay + 1) % 7; // عشان نبدي بالسبت
+  const daysInMonth = new Date(y, m+1, 0).getDate();
+  const today = new Date();
+
+  let html = '';
+  for (let i=0; i<offset; i++) html += `<div class="day-cell empty"></div>`;
+  for (let d=1; d<=daysInMonth; d++) {
+    const cellDate = new Date(y, m, d);
+    const wdIdx = (cellDate.getDay()+1)%7;
+    const k = keyOf(y,m,d);
+    const isToday = cellDate.toDateString() === today.toDateString();
+    const dayPosts = posts[k] || [];
+    const chips = dayPosts.map((p,i)=>`
+      <div class="post-chip ${catClass[p.cat]}">
+        <span>${p.link?'🔗 ':''}${p.title}</span>
+        <span class="chip-plat">${p.plat}</span>
+      </div>`).join('');
+    html += `
+      <div class="day-cell ${isToday?'today':''}" onclick="openDay(${y},${m},${d})">
+        <div class="day-num">
+          <span>${d}</span>
+          ${isToday?'<span class="today-tag">اليوم</span>':`<span class="day-weekday-lbl">${weekdaysAr[wdIdx]}</span>`}
+        </div>
+        ${chips}
+        <div class="add-mini">+ بوست</div>
+      </div>`;
+  }
+  document.getElementById('calGrid').innerHTML = html;
+  renderStats();
+}
+
+function renderStats() {
+  const y = current.getFullYear(), m = current.getMonth();
+  let total=0; const byCat = {menu:0,vibe:0,engage:0,bts:0,offer:0};
+  Object.keys(posts).forEach(k=>{
+    const [py,pm] = k.split('-').map(Number);
+    if (py===y && pm===m) posts[k].forEach(p=>{ total++; byCat[p.cat]=(byCat[p.cat]||0)+1; });
+  });
+  const topCat = Object.keys(byCat).reduce((a,b)=>byCat[a]>=byCat[b]?a:b);
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat-card"><div class="num">${total}</div><div class="lbl">إجمالي البوستات هالشهر</div></div>
+    <div class="stat-card"><div class="num">${Math.round(total/4.3*10)/10}</div><div class="lbl">متوسط بالأسبوع</div></div>
+    <div class="stat-card"><div class="num">${byCat.menu}</div><div class="lbl">☕ منيو</div></div>
+    <div class="stat-card"><div class="num">${byCat.bts}</div><div class="lbl">🎬 خلف الكواليس</div></div>
+    <div class="stat-card"><div class="num">${total?catNames[topCat].split(' ')[0]:'—'}</div><div class="lbl">القسم الأكثر</div></div>
+  `;
+}
+
+// ─── DAY MODAL ───────────────────────────────────────────
+function openDay(y,m,d) {
+  selectedKey = keyOf(y,m,d);
+  const cellDate = new Date(y,m,d);
+  const wdIdx = (cellDate.getDay()+1)%7;
+  document.getElementById('modalDate').textContent = `${d} ${monthsAr[m]} — ${weekdaysAr[wdIdx]}`;
+  const suggestion = weeklyTemplate[wdIdx];
+  document.getElementById('modalSub').textContent = suggestion ? `اقتراح اليوم: ${suggestion.title}` : '';
+  // عبّي الاقتراح تلقائياً
+  if (suggestion) {
+    document.getElementById('f-title').value = suggestion.title;
+    document.getElementById('f-cat').value = suggestion.cat;
+    document.getElementById('f-plat').value = suggestion.plat;
+  }
+  document.getElementById('f-note').value = '';
+  document.getElementById('f-link').value = '';
+  renderExisting();
+  document.getElementById('dayModal').classList.add('open');
+}
+
+function renderExisting() {
+  const list = posts[selectedKey] || [];
+  const box = document.getElementById('existingPosts');
+  if (!list.length) { box.innerHTML=''; return; }
+  box.innerHTML = list.map((p,i)=>`
+    <div class="existing-post ${catClass[p.cat]}">
+      <div class="ep-text">${p.title}<div class="ep-plat">${catNames[p.cat]} · ${p.plat}</div>${p.link?`<div style="margin-top:5px">${linkPreview(p.link)}</div>`:''}</div>
+      <button class="ep-del" onclick="delPost(${i})">×</button>
+    </div>`).join('');
+}
+
+function addPost() {
+  const title = document.getElementById('f-title').value.trim();
+  if (!title) { document.getElementById('f-title').focus(); return; }
+  const p = {
+    title,
+    cat: document.getElementById('f-cat').value,
+    plat: document.getElementById('f-plat').value,
+    note: document.getElementById('f-note').value.trim(),
+    link: document.getElementById('f-link').value.trim()
+  };
+  if (!posts[selectedKey]) posts[selectedKey]=[];
+  posts[selectedKey].push(p);
+  autoSave();
+  document.getElementById('f-title').value='';
+  document.getElementById('f-note').value='';
+  document.getElementById('f-link').value='';
+  renderExisting();
+  renderCalendar();
+}
+
+function delPost(i) {
+  posts[selectedKey].splice(i,1);
+  if (!posts[selectedKey].length) delete posts[selectedKey];
+  autoSave();
+  renderExisting();
+  renderCalendar();
+}
+
+function closeModal() { document.getElementById('dayModal').classList.remove('open'); }
+document.getElementById('dayModal').addEventListener('click', e=>{ if(e.target.id==='dayModal') closeModal(); });
+
+// ─── MONTH NAV ───────────────────────────────────────────
+function changeMonth(delta) {
+  current = new Date(current.getFullYear(), current.getMonth()+delta, 1);
+  renderCalendar();
+}
+
+// ─── TEMPLATE FILL ───────────────────────────────────────
+function applyTemplate() {
+  if (!confirm('راح يعبّي كل أيام الشهر بالإيقاع الأسبوعي المقترح. البوستات الحالية تبقى. متأكد؟')) return;
+  const y=current.getFullYear(), m=current.getMonth();
+  const daysInMonth = new Date(y,m+1,0).getDate();
+  for (let d=1; d<=daysInMonth; d++) {
+    const cellDate = new Date(y,m,d);
+    const wdIdx = (cellDate.getDay()+1)%7;
+    const t = weeklyTemplate[wdIdx];
+    if (!t) continue;
+    const k = keyOf(y,m,d);
+    if (!posts[k]) posts[k]=[];
+    // لا تكرر نفس الاقتراح إذا موجود
+    if (!posts[k].some(p=>p.title===t.title))
+      posts[k].push({ title:t.title, cat:t.cat, plat:t.plat, note:'' });
+  }
+  autoSave();
+  renderCalendar();
+}
+
+// ─── IDEAS ───────────────────────────────────────────────
+function linkPreview(url) {
+  if (!url) return '';
+  let label = '🔗 فتح الرابط', icon = '🔗';
+  const u = url.toLowerCase();
+  if (u.includes('instagram')) { icon='📸'; label='عرض على Instagram'; }
+  else if (u.includes('tiktok')) { icon='🎵'; label='عرض على TikTok'; }
+  else if (u.includes('youtu')) { icon='▶️'; label='عرض على YouTube'; }
+  else if (u.includes('snapchat')) { icon='👻'; label='عرض على Snapchat'; }
+  else if (u.includes('drive.google')) { icon='📁'; label='فتح من Drive'; }
+  else if (u.match(/\.(jpg|jpeg|png|gif|webp)/)) { icon='🖼️'; label='عرض الصورة'; }
+  return `<a href="${url}" target="_blank" rel="noopener" class="idea-link" onclick="event.stopPropagation()">${icon} ${label}</a>`;
+}
+
+function renderIdeas() {
+  document.getElementById('ideaCount').textContent = '— ' + ideaBank.length + ' فكرة';
+  document.getElementById('ideasGrid').innerHTML = ideaBank.map((idea,i)=>`
+    <div class="idea-card ${catClass[idea.cat]}">
+      <div class="ic-top">
+        <span class="ic-cat" style="background:${catColor[idea.cat]}22;color:${catColor[idea.cat]}">${catNames[idea.cat]}</span>
+        <div class="ic-tools">
+          <button class="ic-tool" title="تعديل" onclick="openIdeaEditor(${i})">✏️</button>
+          <button class="ic-tool" title="حذف" onclick="deleteIdea(${i})">🗑️</button>
+        </div>
+      </div>
+      <h4>${idea.title}</h4>
+      <p>${idea.desc}</p>
+      <div class="ic-meta">${idea.meta}</div>
+      ${idea.link ? `<div class="ic-linkrow">${linkPreview(idea.link)}</div>` : ''}
+      <div class="ic-actions">
+        <button class="ic-add" onclick="useIdea(${i})">↗ إضافة لليوم</button>
+        <button class="ic-linkbtn" onclick="openIdeaEditor(${i}, true)">${idea.link ? '🔗 تعديل الرابط' : '🔗 إضافة رابط'}</button>
+      </div>
+    </div>`).join('');
+}
+
+let pendingIdea = null;
+function useIdea(i) {
+  pendingIdea = ideaBank[i];
+  window._ideaMode = true;
+  // أظهر شريط توجيه ثابت فوق
+  let banner = document.getElementById('ideaBanner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'ideaBanner';
+    banner.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:300;background:var(--maroon);color:#fff;padding:12px 22px;border-radius:30px;font-weight:700;font-size:13px;box-shadow:0 10px 30px rgba(0,0,0,.4);border:2px solid var(--caramel);display:flex;align-items:center;gap:12px';
+    document.body.appendChild(banner);
+  }
+  banner.innerHTML = `👆 اختر اليوم من الكاليندر لإضافة: "${pendingIdea.title}" <span style="cursor:pointer;opacity:.8;font-size:18px" onclick="cancelIdea()">×</span>`;
+  banner.style.display = 'flex';
+  document.querySelectorAll('.day-cell:not(.empty)').forEach(c=>{ c.style.outline = '2px dashed var(--caramel)'; });
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+function cancelIdea() {
+  window._ideaMode=false; pendingIdea=null;
+  const b=document.getElementById('ideaBanner'); if(b) b.style.display='none';
+  document.querySelectorAll('.day-cell').forEach(c=>c.style.outline='');
+}
+
+// ─── IDEA EDITOR (إضافة/تعديل فكرة) ──────────────────────
+let editingIdea = null; // index أو null للجديدة
+function openIdeaEditor(i, focusLink) {
+  editingIdea = i;
+  const isNew = (i===null || i===undefined);
+  const idea = isNew ? { cat:'menu', title:'', desc:'', meta:'', link:'' } : ideaBank[i];
+  document.getElementById('ideaEditorTitle').textContent = isNew ? 'فكرة جديدة' : 'تعديل الفكرة';
+  document.getElementById('ie-title').value = idea.title || '';
+  document.getElementById('ie-cat').value = idea.cat || 'menu';
+  document.getElementById('ie-desc').value = idea.desc || '';
+  document.getElementById('ie-meta').value = idea.meta || '';
+  document.getElementById('ie-link').value = idea.link || '';
+  document.getElementById('ie-delete').style.display = isNew ? 'none' : 'block';
+  document.getElementById('ideaEditor').classList.add('open');
+  setTimeout(()=> document.getElementById(focusLink ? 'ie-link' : 'ie-title').focus(), 50);
+}
+function saveIdea() {
+  const title = document.getElementById('ie-title').value.trim();
+  if (!title) { document.getElementById('ie-title').focus(); return; }
+  const obj = {
+    cat: document.getElementById('ie-cat').value,
+    title,
+    desc: document.getElementById('ie-desc').value.trim(),
+    meta: document.getElementById('ie-meta').value.trim() || 'محتوى',
+    link: document.getElementById('ie-link').value.trim()
+  };
+  if (editingIdea===null || editingIdea===undefined) ideaBank.push(obj);
+  else ideaBank[editingIdea] = obj;
+  autoSave();
+  closeIdeaEditor();
+  renderIdeas();
+}
+function deleteIdeaFromEditor() {
+  if (editingIdea!==null && editingIdea!==undefined) {
+    ideaBank.splice(editingIdea,1);
+    autoSave();
+    closeIdeaEditor();
+    renderIdeas();
+  }
+}
+function deleteIdea(i) {
+  if (confirm('حذف هذه الفكرة من البنك؟')) { ideaBank.splice(i,1); autoSave(); renderIdeas(); }
+}
+function closeIdeaEditor() { document.getElementById('ideaEditor').classList.remove('open'); }
+
+
+// عدّل openDay عشان يدعم وضع الفكرة
+const _origOpenDay = openDay;
+openDay = function(y,m,d) {
+  if (window._ideaMode && pendingIdea) {
+    const k = keyOf(y,m,d);
+    if (!posts[k]) posts[k]=[];
+    posts[k].push({ title:pendingIdea.title, cat:pendingIdea.cat, plat:pendingIdea.meta.split('·')[0].trim(), note:pendingIdea.desc, link:pendingIdea.link||'' });
+    autoSave();
+    cancelIdea();
+    renderCalendar();
+    return;
+  }
+  _origOpenDay(y,m,d);
+};
+
+// إغلاق مودال الأفكار بالضغط الخارجي
+document.getElementById('ideaEditor').addEventListener('click', e=>{ if(e.target.id==='ideaEditor') closeIdeaEditor(); });
+
+// ─── INIT ────────────────────────────────────────────────
+renderCalendar();
+renderIdeas();
+</script>
+</body>
+</html>
